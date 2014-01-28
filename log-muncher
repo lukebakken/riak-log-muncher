@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# vim:sw=2:ts=2
+
+# set -o errexit
+set -o nounset
+
+function now
+{
+  date '+%Y-%m-%d %H:%M:%S'
+}
+
+function perr
+{
+  echo "$(now) [error]: $@" 1>&2
+}
+
+function pinfo
+{
+  echo "$(now) [info]: $@"
+}
+
+function errexit
+{
+  perr "$@"
+  exit 1
+}
+
+# TODO: commands used, check for existence:
+# find, egrep
+
+if (( ${BASH_VERSINFO[0]} != 4 ))
+then
+  errexit 'bash version 4 is required.'
+fi
+
+logs_dir="${1-0xdeadbeef}"
+if [[ ! -d $logs_dir ]]
+then
+  errexit 'first argument must be a directory.'
+fi
+
+declare -i processed=0
+for log_dir in $logs_dir/*-riak-debug
+do
+  if [[ -d "$log_dir" ]]
+  then
+    node_commands_dir="$log_dir/commands"
+    node_config_dir="$log_dir/config"
+    node_log_dir="$log_dir/logs"
+    node_ring_dir="$log_dir/ring"
+
+    if [[ -d $node_commands_dir && -d $node_config_dir && -d $node_log_dir && -d $node_ring_dir ]]
+    then
+      echo "PROCESSING: $log_dir"
+
+      # TODO: call processing "plugins" here.
+      hostname_file="$log_dir/commands/hostname"
+      if [[ -s $hostname_file ]]
+      then
+        hostname="$(< $log_dir/commands/hostname)"
+        echo "HOSTNAME: $hostname"
+      fi
+
+      (( processed++ ))
+    else
+      perr "required subdir missing, skipping dir $log_dir"
+    fi
+  fi
+done
+
+if (( processed == 0 ))
+then
+  perr "no subdirectories of $logs_dir matched pattern *-riak-debug. Nothing to do."
+else
+  pinfo "processed $processed riak-debug directories."
+fi
+
+# while read -r host_file
+# do
+#   echo "HOSTFILE: $(< $host_file)"
+# done < <(find "$logs_dir" \( -type d -name .info -prune \) -o \( -type f -name 'hostname' -print \) )
+# 
+# while read -r log_path
+# do
+#   if [[ $log_path == *@* ]]
+#   then
+#     echo "LOG PATH: $log_path"
+#   fi
+# done < <(find "$logs_dir" -type f -name '*.log*')
