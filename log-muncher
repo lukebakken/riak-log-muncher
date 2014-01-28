@@ -51,14 +51,14 @@ do
 
     if [[ -d $node_commands_dir && -d $node_config_dir && -d $node_log_dir && -d $node_ring_dir ]]
     then
-      echo "PROCESSING: $log_dir"
+      pinfo "PROCESSING: $log_dir"
 
       # TODO: call processing "plugins" here.
       hostname_file="$log_dir/commands/hostname"
       if [[ -s $hostname_file ]]
       then
         hostname="$(< $log_dir/commands/hostname)"
-        echo "HOSTNAME: $hostname"
+        pinfo "HOSTNAME: $hostname"
       fi
 
       (( processed++ ))
