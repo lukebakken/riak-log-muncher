@@ -24,6 +24,8 @@ then
   errexit 'first argument must be a directory.'
 fi
 
+verify_commands 'grep' 'fgrep' 'egrep' 'perl'
+
 declare -i processed=0
 for log_dir in $logs_dir/*-riak-debug
 do
@@ -82,6 +84,7 @@ else
 
   if [[ -d $summary_dir ]]
   then
+    rm -rf "${summary_dir}_old"
     mv -f $summary_dir "${summary_dir}_old"
   fi
   mkdir $summary_dir

@@ -30,13 +30,29 @@ function on_exit()
   done
 }
 
-function add_on_exit()
+function add_on_exit
 {
   local n=${#on_exit_items[*]}
   on_exit_items[$n]="$*"
   if [[ $n -eq 0 ]]; then
-    echo "Setting trap"
+    # TODO: if debug echo "Setting trap"
     trap on_exit EXIT
   fi
+}
+
+function verify_commands
+{
+  for required_command in "$@"
+  do
+    if ! is_command_present $required_command
+    then
+      errexit "required command '$required_command' not in PATH, exiting."
+    fi
+  done
+}
+
+function is_command_present
+{
+  hash "$1" 2>/dev/null
 }
 
