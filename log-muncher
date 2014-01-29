@@ -1,29 +1,13 @@
 #!/usr/bin/env bash
 # vim:sw=2:ts=2
 
-# set -o errexit
+set -o errexit
+set -o errtrace
 set -o nounset
 
-function now
-{
-  date '+%Y-%m-%d %H:%M:%S'
-}
-
-function perr
-{
-  echo "$(now) [error]: $@" 1>&2
-}
-
-function pinfo
-{
-  echo "$(now) [info]: $@"
-}
-
-function errexit
-{
-  perr "$@"
-  exit 1
-}
+source ./lib/common.bash
+# source ./lib/emfile.bash
+source ./lib/riak_kv.bash
 
 # TODO: commands used, check for existence:
 # find, egrep
@@ -61,7 +45,22 @@ do
         pinfo "HOSTNAME: $hostname"
       fi
 
-      (( processed++ ))
+      for node_log_subdir in $node_log_dir/*
+      do
+        for node_log_file in $node_log_subdir/*
+        do
+          if [[ -f $node_log_file && -s $node_log_file ]]
+          then
+            #
+            # TODO: add all per-file handlers here.
+            #
+            process_riak_kv "$node_log_subdir" "$node_log_file"
+            # process_emfile "$node_log_subdir" "$node_log_file"
+          fi
+        done
+      done
+
+      (( ++processed )) # NB: processed++ exits due to errexit
     else
       perr "required subdir missing, skipping dir $log_dir"
     fi
@@ -72,7 +71,24 @@ if (( processed == 0 ))
 then
   perr "no subdirectories of $logs_dir matched pattern *-riak-debug. Nothing to do."
 else
+  #
+  # TODO summaries
+  #
   pinfo "processed $processed riak-debug directories."
+
+  summary_dir='./summary'
+
+  if [[ -d $summary_dir ]]
+  then
+    mv -f $summary_dir "${summary_dir}_old"
+  fi
+  mkdir $summary_dir
+  consolidate_riak_kv_output $summary_dir
+  # consolidate_emfile_output $summary_dir
+
+  # build_summary_overview
+  # summary_emfile
+  summary_riak_kv
 fi
 
 # while read -r host_file
