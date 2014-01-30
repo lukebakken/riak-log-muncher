@@ -6,7 +6,7 @@ set -o errtrace
 set -o nounset
 
 source ./lib/common.bash
-# source ./lib/emfile.bash
+source ./lib/emfile.bash
 source ./lib/riak_kv.bash
 source ./lib/bitcask.bash
 
@@ -57,7 +57,7 @@ do
             #
             process_riak_kv "$node_log_subdir" "$node_log_file"
             process_bitcask "$node_log_subdir" "$node_log_file"
-            # process_emfile "$node_log_subdir" "$node_log_file"
+            process_emfile "$node_log_subdir" "$node_log_file"
           fi
         done
       done
@@ -88,10 +88,10 @@ else
   mkdir $summary_dir
   consolidate_riak_kv_output $summary_dir
   consolidate_bitcask_output $summary_dir
-  # consolidate_emfile_output $summary_dir
+  consolidate_emfile_output $summary_dir
 
   # build_summary_overview
-  # summary_emfile
+  summary_emfile $summary_dir
   summary_riak_kv $summary_dir
   summary_bitcask $summary_dir
 fi

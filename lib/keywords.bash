@@ -36,12 +36,7 @@ $riak_kv_count riak_kv matches in $node_log_file:
 function consolidate_riak_kv_output
 {
   local summary_dir="$1"
-  if [[ -s $riak_kv_summary_file_tmp ]]
-  then
-    mv -f $riak_kv_summary_file_tmp "$summary_dir/riak_kv"
-  else
-    rm -f $riak_kv_summary_file_tmp
-  fi
+  mv -f $riak_kv_summary_file_tmp "$summary_dir/riak_kv"
 }
 
 function summary_riak_kv

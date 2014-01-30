@@ -1,9 +1,15 @@
 declare -i emfile_total=0
 
-emfile_summary_file_tmp="./emfile-summary.$$.tmp"
-# TODO
-# emfile_summary_file_tmp=$(mktemp -d -t emfile-summary)
-# add_on_exit rm -vf $emfile_summary_file_tmp
+emfile_summary_file_tmp=$(mktemp -t emfile-summary)
+
+function emfile_onexit
+{
+  if [[ -f $emfile_summary_file_tmp ]]
+  then
+    rm -f $emfile_summary_file_tmp
+  fi
+}
+add_on_exit emfile_onexit
 
 function process_emfile
 {
@@ -33,8 +39,19 @@ $emfile_count emfile matches in $node_log_file:
   fi
 }
 
+function consolidate_emfile_output
+{
+  local summary_dir="$1"
+  if [[ -s $emfile_summary_file_tmp ]]
+  then
+    mv -f $emfile_summary_file_tmp "$summary_dir/emfile"
+  else
+    rm -f $emfile_summary_file_tmp
+  fi
+}
+
 function summary_emfile
 {
-  pinfo "emfile $emfile_total"
+  pinfo "total: emfile $emfile_total"
 }
 
