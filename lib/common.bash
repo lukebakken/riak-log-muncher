@@ -3,6 +3,11 @@ function now
   date '+%Y-%m-%d %H:%M:%S'
 }
 
+function pwarn
+{
+  echo "$(now) [warning]: $@" 1>&2
+}
+
 function perr
 {
   echo "$(now) [error]: $@" 1>&2

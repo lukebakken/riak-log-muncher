@@ -38,15 +38,13 @@ do
 
     if [[ -d $node_commands_dir && -d $node_config_dir && -d $node_log_dir && -d $node_ring_dir ]]
     then
-      pinfo "PROCESSING: $log_dir"
+      # Extract node name from log directory, which will be in the form:
+      # ./../tickets/7015/comments/7/lumi-riak@10.42.1.28-riak-debug
+      tmp="${log_dir##*/}"
+      nodename="${tmp%%*-}"
 
-      # TODO: call processing "plugins" here.
-      hostname_file="$log_dir/commands/hostname"
-      if [[ -s $hostname_file ]]
-      then
-        hostname="$(< $log_dir/commands/hostname)"
-        pinfo "HOSTNAME: $hostname"
-      fi
+      pinfo "NODENAME: $nodename"
+      pinfo "PROCESSING: $log_dir"
 
       for node_log_subdir in $node_log_dir/*
       do
@@ -94,19 +92,8 @@ else
 
   # build_summary_overview
   # summary_emfile
-  summary_riak_kv
-  summary_bitcask
+  summary_riak_kv $summary_dir
+  summary_bitcask $summary_dir
 fi
 
-# while read -r host_file
-# do
-#   echo "HOSTFILE: $(< $host_file)"
-# done < <(find "$logs_dir" \( -type d -name .info -prune \) -o \( -type f -name 'hostname' -print \) )
-# 
-# while read -r log_path
-# do
-#   if [[ $log_path == *@* ]]
-#   then
-#     echo "LOG PATH: $log_path"
-#   fi
-# done < <(find "$logs_dir" -type f -name '*.log*')
+exit 0
