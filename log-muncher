@@ -6,12 +6,8 @@ set -o errtrace
 set -o nounset
 
 source ./lib/common.bash
-source ./lib/emfile.bash
-source ./lib/riak_kv.bash
 source ./lib/bitcask.bash
-
-# TODO: commands used, check for existence:
-# find, egrep
+source ./lib/keywords.bash
 
 if (( ${BASH_VERSINFO[0]} != 4 ))
 then
@@ -41,7 +37,7 @@ do
       # Extract node name from log directory, which will be in the form:
       # ./../tickets/7015/comments/7/lumi-riak@10.42.1.28-riak-debug
       tmp="${log_dir##*/}"
-      nodename="${tmp%%*-}"
+      nodename="${tmp%-riak-debug}"
 
       pinfo "NODENAME: $nodename"
       pinfo "PROCESSING: $log_dir"
@@ -55,9 +51,8 @@ do
             #
             # TODO: add all per-file handlers here.
             #
-            process_riak_kv "$node_log_subdir" "$node_log_file"
             process_bitcask "$node_log_subdir" "$node_log_file"
-            process_emfile "$node_log_subdir" "$node_log_file"
+            process_keywords "$node_log_subdir" "$node_log_file" "$nodename"
           fi
         done
       done
@@ -86,14 +81,13 @@ else
     mv -f $summary_dir "${summary_dir}_old"
   fi
   mkdir $summary_dir
-  consolidate_riak_kv_output $summary_dir
   consolidate_bitcask_output $summary_dir
-  consolidate_emfile_output $summary_dir
+  consolidate_keywords_output $summary_dir
 
   # build_summary_overview
-  summary_emfile $summary_dir
-  summary_riak_kv $summary_dir
   summary_bitcask $summary_dir
+  summary_keywords $summary_dir
 fi
 
 exit 0
+
