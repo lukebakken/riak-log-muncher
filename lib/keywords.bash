@@ -23,6 +23,7 @@ while (<$infh>) {
             } else {
                 (my $fh, my $filename) = tempfile();
                 $fh->print("FILE:$log_file\n");
+                $fh->print($_);
                 $kw_totals{$kw} = [1, $fh, $filename];
             }
         } 
@@ -33,9 +34,16 @@ open(my $outfh, ">>", $out_file)
   or die "can not open output file $out_file: $!";
 for my $kw (keys %kw_totals) {
     my $kw_ary = $kw_totals{$kw};
-    close($$kw_ary[1]);
-    my $outstr = "$kw $$kw_ary[0] $$kw_ary[2]\n";
-    $outfh->print($outstr);
+    my $total = $$kw_ary[0];
+    my $tmpfh = $$kw_ary[1];
+    my $tmpfile = $$kw_ary[2];
+    close($tmpfh);
+    if ($total > 0) {
+        my $outstr = "$kw $total $tmpfile\n";
+        $outfh->print($outstr);
+    } else {
+        unlink($tmpfile);
+    }
 }
 close($outfh);' >&3
 exec 3>&-
