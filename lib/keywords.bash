@@ -92,7 +92,8 @@ function consolidate_keywords_output
         local -i total=$2
         local tmpfile=$3
 
-        mv -f $tmpfile "$node_summary_dir/$keyword-$total.dat"
+        cat $tmpfile >> "$node_summary_dir/$keyword.dat"
+        rm -f $tmpfile
 
         (( keyword_totals[$keyword] += $total ))
 
