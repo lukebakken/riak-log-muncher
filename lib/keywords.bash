@@ -45,12 +45,12 @@ function keywords_onexit
   set +o nounset
   for outfile in "${keywords_out[@]}"
   do
-    rm -vf $outfile
+    rm -f $outfile
   done
   set -o nounset
   if [[ -f $keywords_pl ]]
   then
-    rm -vf $keywords_pl
+    rm -f $keywords_pl
   fi
 }
 add_on_exit keywords_onexit
@@ -81,7 +81,6 @@ function consolidate_keywords_output
     local outfile="${keywords_out[$nodename]}"
     if [[ -s $outfile ]]
     then
-      pinfo "Consolidating $nodename outfile: $outfile"
       local node_summary_dir="$summary_dir/$nodename"
       mkdir $node_summary_dir
 

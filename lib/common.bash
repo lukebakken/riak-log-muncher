@@ -30,7 +30,7 @@ function on_exit()
 {
   for i in "${on_exit_items[@]}"
   do
-    echo "on_exit: $i"
+    # echo "on_exit: $i"
     eval $i
   done
 }
