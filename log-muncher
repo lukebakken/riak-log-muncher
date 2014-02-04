@@ -5,7 +5,7 @@ set -o errexit
 set -o errtrace
 set -o nounset
 
-source_dir="$(dirname $0)"
+source_dir="$(perl -e 'use File::Basename;use Cwd q(abs_path);print dirname(abs_path(shift))' $0)"
 source "$source_dir/lib/common.bash"
 source "$source_dir/lib/bitcask.bash"
 source "$source_dir/lib/keywords.bash"
