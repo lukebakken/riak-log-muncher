@@ -5,9 +5,10 @@ set -o errexit
 set -o errtrace
 set -o nounset
 
-source ./lib/common.bash
-source ./lib/bitcask.bash
-source ./lib/keywords.bash
+source_dir="$(dirname $0)"
+source "$source_dir/lib/common.bash"
+source "$source_dir/lib/bitcask.bash"
+source "$source_dir/lib/keywords.bash"
 
 if (( ${BASH_VERSINFO[0]} != 4 ))
 then
