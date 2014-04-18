@@ -1,5 +1,8 @@
 declare -A keywords_out
+
 declare -A keyword_totals
+keyword_totals['dummy']=0 # NB: so nounset works
+
 keywords_pl=$(mktemp -t keywords-pl)
 
 exec 3>$keywords_pl
@@ -117,7 +120,10 @@ function summary_keywords
   for keyword in "${!keyword_totals[@]}"
   do
     local -i keyword_total=${keyword_totals[$keyword]}
-    pinfo "keyword $keyword: $keyword_total"
+    if (( keyword_total > 0 ))
+    then
+      pinfo "keyword $keyword: $keyword_total"
+    fi
   done
 }
 

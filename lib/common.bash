@@ -25,6 +25,7 @@ function errexit
 }
 
 declare -a on_exit_items
+on_exit_items[0]='' # NB: so nounset works
 
 function on_exit()
 {
@@ -37,7 +38,7 @@ function on_exit()
 
 function add_on_exit
 {
-  local n=${#on_exit_items[*]}
+  local -i n=${#on_exit_items[*]}
   on_exit_items[$n]="$*"
   if [[ $n -eq 0 ]]; then
     # TODO: if debug echo "Setting trap"
