@@ -9,7 +9,7 @@ exec 3>$keywords_pl
 echo 'use strict;
 use warnings;
 use File::Temp qw/tempfile/;
-my @keywords = qw(emfile system_memory_high_watermark eaddrinuse eaddrnotavail badarg noproc econnrefused insufficient_vnodes_available invalid_ring_state_dir not_reachable all_nodes_down local_put_failed precommit_fail busy_dist_port);
+my @keywords = qw(emfile system_memory_high_watermark eaddrinuse eaddrnotavail badarg noproc econnrefused insufficient_vnodes_available invalid_ring_state_dir not_reachable all_nodes_down local_put_failed precommit_fail busy_dist_port disk_almost_full erofs);
 my %kw_totals;
 my $log_file = $ARGV[0];
 my $out_file = $ARGV[1];
