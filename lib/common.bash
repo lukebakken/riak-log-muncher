@@ -62,3 +62,13 @@ function is_command_present
   hash "$1" 2>/dev/null
 }
 
+function make_temp_file
+{
+  local template="$1"
+  if [[ ! $template == *XXXXXX ]]
+  then
+    template="$template.XXXXXX"
+  fi
+  mktemp -t "$template"
+}
+

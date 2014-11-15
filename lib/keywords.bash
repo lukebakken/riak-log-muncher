@@ -3,7 +3,7 @@ declare -A keywords_out
 declare -A keyword_totals
 keyword_totals['dummy']=0 # NB: so nounset works
 
-keywords_pl=$(mktemp -t keywords-pl)
+keywords_pl=$(make_temp_file keywords-pl)
 
 exec 3>$keywords_pl
 echo 'use strict;
@@ -76,7 +76,7 @@ function process_keywords
   local keywords_out_tmp="${keywords_out[$nodename]}"
   if [[ ! -f $keywords_out_tmp ]]
   then
-    keywords_out_tmp="$(mktemp -t $nodename-keywords)"
+    keywords_out_tmp="$(make_temp_file $nodename-keywords)"
     keywords_out[$nodename]="$keywords_out_tmp"
   fi
   set -o nounset

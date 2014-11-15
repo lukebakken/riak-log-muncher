@@ -1,4 +1,4 @@
-bitcask_summary_file_tmp=$(mktemp -t bitcask-summary)
+bitcask_summary_file_tmp=$(make_temp_file bitcask-summary)
 
 function bitcask_onexit
 {
@@ -43,7 +43,7 @@ function summary_bitcask
     if is_command_present 'rscript'
     then
       local histogram_png="$summary_dir/bitcask.png"
-      local rscript=$(mktemp -t bitcask-rscript)
+      local rscript=$(make_temp_file bitcask-rscript)
 
       exec 3>$rscript
       # NB: leading spaces are OK in R scripts
